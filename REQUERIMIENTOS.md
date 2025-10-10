@@ -70,3 +70,89 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Ver órdenes asignadas a él.
 - Actualizar estado de sus órdenes.
 - Agregar notas y observaciones.
+
+## 5. Funciones Indispensables por Perfil
+
+**Administrador (orden de prioridad):**
+1. Autenticación y acceso seguro al sistema.
+2. Gestión completa de clientes.
+3. **Crear presupuestos con datos del vehículo y trabajos.**
+4. **Enviar presupuestos por correo al cliente.**
+5. **Aprobar presupuestos (crea automáticamente orden de trabajo).**
+6. **Rechazar presupuestos.**
+7. Asignar mecánicos a órdenes.
+8. Cambiar estado de órdenes.
+9. **Envío automático de correo al cliente (estado "Listo").**
+10. Buscar y filtrar presupuestos y órdenes.
+
+**Mecánico:**
+1. Ver órdenes asignadas.
+2. Actualizar estado de órdenes.
+3. Agregar notas a órdenes.
+
+## 6. Datos Básicos a Almacenar
+
+### Cliente:
+- ID
+- Nombre completo
+- Teléfono
+- **Correo electrónico (obligatorio para notificaciones)**
+- Fecha de registro
+
+### Presupuesto:
+- ID
+- Número de presupuesto (correlativo)
+- ID Cliente (referencia)
+- **Datos del vehículo:**
+  - Marca
+  - Modelo
+  - Año
+  - Patente/Placa
+  - Kilometraje
+- Fecha de emisión
+- Descripción del trabajo/problema
+- Trabajos propuestos (texto descriptivo)
+- Costo estimado (CLP)
+- **Estado (Pendiente, Aprobado, Rechazado)**
+- **Correo enviado (boolean)**
+- **Fecha de envío de correo**
+- **ID Orden de Trabajo generada (referencia, si fue aprobado)**
+- Observaciones
+
+### Orden de Trabajo:
+- ID
+- Número de orden (correlativo)
+- **ID Presupuesto (referencia al presupuesto aprobado)**
+- ID Cliente (referencia)
+- ID Mecánico asignado (referencia)
+- **Datos del vehículo (copiados del presupuesto):**
+  - Marca
+  - Modelo
+  - Año
+  - Patente/Placa
+  - Kilometraje al ingreso
+- Fecha de creación (cuando se aprobó el presupuesto)
+- Fecha estimada de entrega
+- Fecha de entrega real
+- Descripción del trabajo (copiada del presupuesto)
+- Trabajos realizados (puede ser editado/ampliado)
+- Observaciones adicionales
+- Estado (En Reparación, Listo, Entregado)
+- Costo final (CLP)
+- **Correo de "Listo" enviado (boolean)**
+- **Fecha de envío de correo "Listo"**
+
+### Mecánico:
+- ID
+- Nombre completo
+- Teléfono
+- Especialidad (opcional)
+- Estado (Activo/Inactivo)
+
+### Usuario (para autenticación):
+- ID
+- Username
+- Password (encriptado)
+- Rol (Administrador/Mecánico)
+- ID Mecánico (referencia, si aplica)
+- Estado (Activo/Inactivo)
