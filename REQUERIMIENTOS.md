@@ -20,12 +20,12 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 **Incluido en el MVP:**
 - Sistema de autenticación con JWT.
 - Gestión completa de clientes (crear, editar, eliminar, listar, buscar).
-- **Gestión de presupuestos (crear, editar, enviar por correo, aprobar/rechazar).**
-- **Creación automática de orden de trabajo al aprobar presupuesto.**
+- Gestión de presupuestos (crear, editar, enviar por correo, aprobar/rechazar).
+- Creación automática de orden de trabajo al aprobar presupuesto.
 - Gestión de órdenes de trabajo (listar, editar, cambiar estado).
 - Asignación de mecánicos a órdenes de trabajo.
 - Estados de órdenes: En Reparación, Listo, Entregado.
-- **Envío automático de correo electrónico al cliente cuando la orden cambia a estado "Listo".**
+- Envío automático de correo electrónico al cliente cuando la orden cambia a estado "Listo".
 - Base de datos MongoDB.
 - Cache con Redis para consultas frecuentes.
 - Proyecto dockerizado con documentación completa.
@@ -59,8 +59,8 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 **Administrador:**
 - Acceso completo al sistema.
 - Crear, editar y eliminar clientes.
-- **Crear, editar y enviar presupuestos.**
-- **Aprobar/rechazar presupuestos.**
+- Crear, editar y enviar presupuestos.
+- Aprobar/rechazar presupuestos.
 - Gestionar órdenes de trabajo.
 - Asignar mecánicos a órdenes.
 - Cambiar estado de órdenes.
@@ -76,13 +76,13 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 **Administrador (orden de prioridad):**
 1. Autenticación y acceso seguro al sistema.
 2. Gestión completa de clientes.
-3. **Crear presupuestos con datos del vehículo y trabajos.**
-4. **Enviar presupuestos por correo al cliente.**
-5. **Aprobar presupuestos (crea automáticamente orden de trabajo).**
-6. **Rechazar presupuestos.**
+3. Crear presupuestos con datos del vehículo y trabajos.
+4. Enviar presupuestos por correo al cliente.
+5. Aprobar presupuestos (crea automáticamente orden de trabajo).
+6. Rechazar presupuestos.
 7. Asignar mecánicos a órdenes.
 8. Cambiar estado de órdenes.
-9. **Envío automático de correo al cliente (estado "Listo").**
+9. Envío automático de correo al cliente (estado "Listo").
 10. Buscar y filtrar presupuestos y órdenes.
 
 **Mecánico:**
@@ -96,14 +96,14 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - ID
 - Nombre completo
 - Teléfono
-- **Correo electrónico (obligatorio para notificaciones)**
+- Correo electrónico (obligatorio para notificaciones)
 - Fecha de registro
 
 ### Presupuesto:
 - ID
 - Número de presupuesto (correlativo)
 - ID Cliente (referencia)
-- **Datos del vehículo:**
+- Datos del vehículo:
   - Marca
   - Modelo
   - Año
@@ -113,19 +113,19 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Descripción del trabajo/problema
 - Trabajos propuestos (texto descriptivo)
 - Costo estimado (CLP)
-- **Estado (Pendiente, Aprobado, Rechazado)**
-- **Correo enviado (boolean)**
-- **Fecha de envío de correo**
-- **ID Orden de Trabajo generada (referencia, si fue aprobado)**
+- Estado (Pendiente, Aprobado, Rechazado)
+- Correo enviado (boolean)
+- Fecha de envío de correo
+- ID Orden de Trabajo generada (referencia, si fue aprobado)
 - Observaciones
 
 ### Orden de Trabajo:
 - ID
 - Número de orden (correlativo)
-- **ID Presupuesto (referencia al presupuesto aprobado)**
+- ID Presupuesto (referencia al presupuesto aprobado)
 - ID Cliente (referencia)
 - ID Mecánico asignado (referencia)
-- **Datos del vehículo (copiados del presupuesto):**
+- Datos del vehículo (copiados del presupuesto):
   - Marca
   - Modelo
   - Año
@@ -139,8 +139,8 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Observaciones adicionales
 - Estado (En Reparación, Listo, Entregado)
 - Costo final (CLP)
-- **Correo de "Listo" enviado (boolean)**
-- **Fecha de envío de correo "Listo"**
+- Correo de "Listo" enviado (boolean)
+- Fecha de envío de correo "Listo"
 
 ### Mecánico:
 - ID
@@ -166,29 +166,29 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Solo el Administrador puede crear nuevos usuarios.
 
 ### 7.2. Clientes
-- **El correo electrónico es obligatorio para enviar presupuestos y notificaciones.**
+- El correo electrónico es obligatorio para enviar presupuestos y notificaciones.
 - No se puede eliminar un cliente que tenga presupuestos u órdenes asociadas.
 - Los datos de contacto (teléfono, correo) deben ser válidos.
 
 ### 7.3. Presupuestos
-- **Los estados posibles son: Pendiente, Aprobado, Rechazado.**
+- Los estados posibles son: Pendiente, Aprobado, Rechazado.
 - Todo presupuesto nuevo se crea en estado "Pendiente".
-- **Los datos del vehículo (marca, modelo, año, patente, kilometraje) son obligatorios.**
+- Los datos del vehículo (marca, modelo, año, patente, kilometraje) son obligatorios.
 - La descripción del trabajo es obligatoria.
 - El costo estimado debe ser mayor a cero.
-- **Un presupuesto puede ser enviado por correo al cliente.**
-- **Al aprobar un presupuesto, se crea automáticamente una orden de trabajo con los mismos datos.**
-- **Un presupuesto aprobado NO puede ser modificado.**
-- **Un presupuesto rechazado queda solo como registro histórico.**
+- Un presupuesto puede ser enviado por correo al cliente.
+- Al aprobar un presupuesto, se crea automáticamente una orden de trabajo con los mismos datos.
+- Un presupuesto aprobado NO puede ser modificado.
+- Un presupuesto rechazado queda solo como registro histórico.
 - Solo el Administrador puede aprobar o rechazar presupuestos.
 
 ### 7.4. Órdenes de Trabajo
-- **Toda orden de trabajo proviene de un presupuesto aprobado.**
-- **Los estados posibles son: En Reparación → Listo → Entregado.**
+- Toda orden de trabajo proviene de un presupuesto aprobado.
+- Los estados posibles son: En Reparación → Listo → Entregado.
 - Al crear la orden (desde presupuesto aprobado), se crea en estado "En Reparación".
-- **La orden mantiene referencia al ID del presupuesto origen.**
+- La orden mantiene referencia al ID del presupuesto origen.
 - Una orden debe tener asignado un mecánico.
-- **Al cambiar estado a "Listo", el sistema debe enviar automáticamente un correo al cliente.**
+- Al cambiar estado a "Listo", el sistema debe enviar automáticamente un correo al cliente.
 - Los trabajos realizados pueden ser editados/ampliados durante la reparación.
 - Solo el Administrador puede eliminar órdenes (solo si están en "En Reparación").
 - No se pueden eliminar órdenes en estado "Listo" o "Entregado".
@@ -200,8 +200,8 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - El Administrador puede reasignar órdenes.
 
 ### 7.6. Notificaciones por Correo
-- **El correo de presupuesto se envía manualmente cuando el Administrador lo solicita.**
-- **El correo de "Listo" se envía automáticamente cuando la orden cambia a ese estado.**
+- El correo de presupuesto se envía manualmente cuando el Administrador lo solicita.
+- El correo de "Listo" se envía automáticamente cuando la orden cambia a ese estado.
 - Los correos deben incluir toda la información relevante.
 - Se debe registrar la fecha y hora de envío.
 - Si el envío falla, se deben realizar hasta 3 reintentos.
@@ -239,13 +239,13 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Crear presupuestos con datos de cliente y vehículo.
 - Editar presupuestos en estado "Pendiente".
 - Listar presupuestos con filtros por estado, cliente, fechas.
-- **Enviar presupuesto por correo electrónico al cliente.**
-- **Aprobar presupuesto (crea automáticamente orden de trabajo).**
-- **Rechazar presupuesto.**
+- Enviar presupuesto por correo electrónico al cliente.
+- Aprobar presupuesto (crea automáticamente orden de trabajo).
+- Rechazar presupuesto.
 - Buscar presupuestos por número, cliente o patente.
 
 **Gestión de Órdenes de Trabajo:**
-- **Crear órdenes automáticamente al aprobar presupuesto.**
+- Crear órdenes automáticamente al aprobar presupuesto.
 - Listar órdenes con filtros por estado, mecánico, cliente, fechas.
 - Editar trabajos realizados y observaciones.
 - Asignar/reasignar mecánico.
@@ -255,8 +255,8 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Ver referencia al presupuesto origen.
 
 **Sistema de Notificaciones:**
-- **Enviar manualmente presupuesto por correo al cliente.**
-- **Enviar automáticamente correo al cliente cuando orden pasa a "Listo".**
+- Enviar manualmente presupuesto por correo al cliente.
+- Enviar automáticamente correo al cliente cuando orden pasa a "Listo".
 - Incluir toda la información relevante en los correos.
 - Registrar fecha de envío.
 - Sistema de reintentos en caso de fallo.
@@ -306,13 +306,13 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Autenticación JWT para Administrador y Mecánico.
 - API REST completa con endpoints para:
   - CRUD de clientes con validación de correo.
-  - **CRUD de presupuestos con aprobación/rechazo.**
-  - **Envío manual de presupuestos por correo.**
-  - **Creación automática de orden al aprobar presupuesto.**
+  - CRUD de presupuestos con aprobación/rechazo.
+  - Envío manual de presupuestos por correo.
+  - Creación automática de orden al aprobar presupuesto.
   - Gestión de órdenes de trabajo.
   - Asignación de mecánicos.
   - Cambio de estados de órdenes.
-  - **Envío automático de correo al cambiar a "Listo".**
+  - Envío automático de correo al cambiar a "Listo".
   - Búsquedas y filtros.
 - MongoDB para persistencia.
 - Redis para cache de consultas frecuentes.
@@ -336,14 +336,14 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 ### Prioridad Crítica (Imprescindible para MVP)
 1. Autenticación JWT y gestión de usuarios.
 2. CRUD de clientes con validación de correo.
-3. **CRUD de presupuestos.**
-4. **Envío manual de presupuestos por correo.**
-5. **Aprobación de presupuestos (✓ crea orden automáticamente).**
-6. **Rechazo de presupuestos.**
-7. **Creación automática de orden desde presupuesto aprobado.**
+3. CRUD de presupuestos.
+4. Envío manual de presupuestos por correo.
+5. Aprobación de presupuestos (✓ crea orden automáticamente).
+6. Rechazo de presupuestos.
+7. Creación automática de orden desde presupuesto aprobado.
 8. Gestión de órdenes (editar, cambiar estado).
 9. Asignación de mecánicos a órdenes.
-10. **Envío automático de correo al estado "Listo".**
+10. Envío automático de correo al estado "Listo".
 11. Persistencia en MongoDB.
 12. Cache básico en Redis.
 13. Proyecto dockerizado.
@@ -396,9 +396,9 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 2. Cliente llama o llega al taller para confirmar.
 3. Administrador busca el presupuesto en el sistema.
 4. Administrador marca presupuesto como "Aprobado".
-5. **Sistema automáticamente:**
+5. Sistema automáticamente:
    - Cambia estado del presupuesto a "Aprobado"
-   - **Crea nueva orden de trabajo con los mismos datos:**
+   - Crea nueva orden de trabajo con los mismos datos:
      - Copia ID de cliente
      - Copia datos del vehículo
      - Copia descripción del trabajo
@@ -413,7 +413,7 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 ### 11.4. Rechazo de Presupuesto
 1. Cliente decide no aprobar el presupuesto.
 2. Administrador marca presupuesto como "Rechazado".
-3. **Sistema NO crea orden de trabajo.**
+3. Sistema NO crea orden de trabajo.
 4. Presupuesto queda como registro histórico.
 
 ### 11.5. Proceso de Reparación
@@ -422,7 +422,7 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 3. Puede agregar observaciones y detalles adicionales.
 4. Si necesita agregar trabajos extra, edita "trabajos realizados".
 5. Al terminar, actualiza estado a "Listo".
-6. **Sistema detecta cambio a "Listo" y envía correo automático al cliente.**
+6. Sistema detecta cambio a "Listo" y envía correo automático al cliente.
 
 ### 11.6. Envío Automático de Correo "Listo"
 1. Sistema detecta que orden cambió a estado "Listo".
@@ -452,7 +452,7 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 ### Relaciones:
 - Cliente (1) → Presupuestos (N)
 - Cliente (1) → Órdenes de Trabajo (N)
-- **Presupuesto (1) → Orden de Trabajo (0..1)** [Relación uno a uno opcional]
+- Presupuesto (1) → Orden de Trabajo (0..1) [Relación uno a uno opcional]
 - Mecánico (1) → Órdenes de Trabajo (N)
 - Usuario (1) → Mecánico (0..1)
 
@@ -542,25 +542,25 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 ### Semana 2: Presupuestos
 - CRUD completo de presupuestos.
 - Validaciones de datos del vehículo.
-- **Envío manual de presupuestos por correo.**
-- **Lógica de aprobación de presupuestos.**
-- **Lógica de rechazo de presupuestos.**
+- Envío manual de presupuestos por correo.
+- Lógica de aprobación de presupuestos.
+- Lógica de rechazo de presupuestos.
 - Búsquedas y filtros de presupuestos.
 
 ### Semana 3: Órdenes y Mecánicos
-- **Creación automática de orden al aprobar presupuesto.**
-- **Vinculación presupuesto ↔ orden.**
+- Creación automática de orden al aprobar presupuesto.
+- Vinculación presupuesto ↔ orden.
 - Gestión de órdenes (editar, estados).
 - CRUD de mecánicos.
 - Asignación de mecánicos a órdenes.
-- **Envío automático de correo al estado "Listo".**
+- Envío automático de correo al estado "Listo".
 
 ### Semana 4: Refinamiento y Documentación
 - Cache con Redis.
 - Validaciones completas de reglas de negocio.
 - Pruebas de integración.
-- **Pruebas exhaustivas del flujo presupuesto → orden.**
-- **Pruebas de envío de correos (manual y automático).**
+- Pruebas exhaustivas del flujo presupuesto → orden.
+- Pruebas de envío de correos (manual y automático).
 - Documentación completa (API, instalación, uso).
 - Ajustes finales y optimización.
 
@@ -599,18 +599,18 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 - [ ] Validación de datos del vehículo (marca, modelo, año, patente, km).
 - [ ] Envío manual de presupuesto por correo.
 - [ ] Formato profesional del correo de presupuesto.
-- [ ] **Aprobar presupuesto (botón/endpoint).**
+- [ ] Aprobar presupuesto (botón/endpoint).
 - [ ] Rechazar presupuesto.
 - [ ] Listar con filtros (estado, cliente, fecha).
 - [ ] Buscar presupuestos.
 
 **Creación Automática de Orden (CRÍTICO):**
-- [ ] **Al aprobar presupuesto, crear orden automáticamente.**
-- [ ] **Copiar todos los datos del presupuesto a la orden.**
-- [ ] **Vincular orden con presupuesto (guardar ID presupuesto en orden).**
-- [ ] **Establecer estado inicial "En Reparación".**
-- [ ] **Generar número de orden correlativo.**
-- [ ] **Presupuesto aprobado no puede modificarse.**
+- [ ] Al aprobar presupuesto, crear orden automáticamente.
+- [ ] Copiar todos los datos del presupuesto a la orden.
+- [ ] Vincular orden con presupuesto (guardar ID presupuesto en orden).
+- [ ] Establecer estado inicial "En Reparación".
+- [ ] Generar número de orden correlativo.
+- [ ] Presupuesto aprobado no puede modificarse.
 
 **Gestión de Órdenes:**
 - [ ] Listar órdenes.
@@ -625,8 +625,8 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 
 **Sistema de Correo (CRÍTICO):**
 - [ ] Configuración correcta de SMTP.
-- [ ] **Envío manual de presupuesto funcional.**
-- [ ] **Envío automático al cambiar orden a "Listo".**
+- [ ] Envío manual de presupuesto funcional.
+- [ ] Envío automático al cambiar orden a "Listo".
 - [ ] Formato profesional de ambos correos.
 - [ ] Sistema de reintentos (3 intentos).
 - [ ] Registro de fecha de envío.
@@ -648,7 +648,7 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 
 **Documentación:**
 - [ ] API documentada (Postman/Swagger).
-- [ ] **Flujo presupuesto → orden documentado.**
+- [ ] Flujo presupuesto → orden documentado.
 - [ ] README completo.
 - [ ] Instrucciones de instalación.
 - [ ] Ejemplos de uso de endpoints clave.
@@ -656,16 +656,16 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 **Pruebas:**
 - [ ] Autenticación.
 - [ ] CRUD de cada módulo.
-- [ ] **Flujo completo: crear presupuesto → enviar → aprobar → orden creada.**
-- [ ] **Envío de correo de presupuesto.**
-- [ ] **Envío automático de correo "Listo".**
+- [ ] Flujo completo: crear presupuesto → enviar → aprobar → orden creada.
+- [ ] Envío de correo de presupuesto.
+- [ ] Envío automático de correo "Listo".
 - [ ] Cambios de estado.
 - [ ] Validaciones de negocio.
 
 **Entrega Final:**
 - [ ] Proyecto funciona con docker-compose.
 - [ ] Todos los endpoints funcionando.
-- [ ] **Flujo presupuesto → orden funcionando perfectamente.**
+- [ ] Flujo presupuesto → orden funcionando perfectamente.
 - [ ] Correos enviándose correctamente.
 - [ ] Base de datos con datos de prueba.
 - [ ] Código limpio y comentado.
@@ -701,9 +701,9 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 2. Cliente decide aprobar y contacta al taller.
 3. Administrador busca el presupuesto en sistema.
 4. Administrador marca presupuesto como "Aprobado".
-5. **Sistema automáticamente:**
+5. Sistema automáticamente:
    - Cambia estado del presupuesto a "Aprobado"
-   - **Crea nueva orden de trabajo**
+   - Crea nueva orden de trabajo
    - Copia todos los datos del presupuesto:
      - Cliente
      - Datos del vehículo
@@ -731,8 +731,8 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 2. Realiza los trabajos especificados.
 3. Agrega observaciones o trabajos adicionales si es necesario.
 4. Al terminar, cambia estado de orden a "Listo".
-5. **Sistema detecta cambio a "Listo".**
-6. **Sistema automáticamente:**
+5. Sistema detecta cambio a "Listo".
+6. Sistema automáticamente:
    - Valida que cliente tenga email
    - Genera correo con:
      - Número de orden
@@ -935,12 +935,12 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 
 **Fase 3 - Órdenes y Automatización (Semana 3):**
 1. Modelo de Órdenes
-2. **Lógica de aprobación de presupuesto**
-3. **Creación automática de orden al aprobar**
-4. **Vinculación presupuesto ↔ orden**
+2. Lógica de aprobación de presupuesto
+3. Creación automática de orden al aprobar
+4. Vinculación presupuesto ↔ orden
 5. CRUD Mecánicos
 6. Asignación de mecánicos
-7. **Envío automático de correo al estado "Listo"**
+7. Envío automático de correo al estado "Listo"
 
 **Fase 4 - Refinamiento (Semana 4):**
 1. Validaciones completas
