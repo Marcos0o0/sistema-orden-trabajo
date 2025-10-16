@@ -224,3 +224,78 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Los endpoints están protegidos con JWT.
 - Los mecánicos solo acceden a sus órdenes asignadas.
 - El Administrador tiene acceso total.
+
+## 8. Requisitos Funcionales y No Funcionales
+
+### Requisitos Funcionales:
+
+**Gestión de Clientes:**
+- Registrar, editar, eliminar y listar clientes.
+- Buscar clientes por nombre o teléfono.
+- Validar formato de correo electrónico.
+- Ver historial de presupuestos y órdenes por cliente.
+
+**Gestión de Presupuestos:**
+- Crear presupuestos con datos de cliente y vehículo.
+- Editar presupuestos en estado "Pendiente".
+- Listar presupuestos con filtros por estado, cliente, fechas.
+- **Enviar presupuesto por correo electrónico al cliente.**
+- **Aprobar presupuesto (crea automáticamente orden de trabajo).**
+- **Rechazar presupuesto.**
+- Buscar presupuestos por número, cliente o patente.
+
+**Gestión de Órdenes de Trabajo:**
+- **Crear órdenes automáticamente al aprobar presupuesto.**
+- Listar órdenes con filtros por estado, mecánico, cliente, fechas.
+- Editar trabajos realizados y observaciones.
+- Asignar/reasignar mecánico.
+- Cambiar estado de órdenes (En Reparación → Listo → Entregado).
+- Ver detalle completo de una orden.
+- Buscar órdenes por número, patente o cliente.
+- Ver referencia al presupuesto origen.
+
+**Sistema de Notificaciones:**
+- **Enviar manualmente presupuesto por correo al cliente.**
+- **Enviar automáticamente correo al cliente cuando orden pasa a "Listo".**
+- Incluir toda la información relevante en los correos.
+- Registrar fecha de envío.
+- Sistema de reintentos en caso de fallo.
+
+**Gestión de Mecánicos:**
+- Registrar, editar y listar mecánicos.
+- Activar/desactivar mecánicos.
+- Ver órdenes asignadas por mecánico.
+
+**Autenticación:**
+- Login con username y password.
+- Generación de token JWT.
+- Protección de endpoints por rol.
+- Logout y expiración de sesión.
+
+### Requisitos No Funcionales:
+
+**Rendimiento:**
+- Responder peticiones en menos de 2 segundos.
+- Soportar al menos 100 clientes, 500 presupuestos y 500 órdenes.
+- El correo debe enviarse en menos de 10 segundos.
+
+**Seguridad:**
+- Encriptación de contraseñas con bcrypt.
+- Tokens JWT con expiración de 24 horas.
+- Validación de datos en backend.
+- Protección contra inyección NoSQL.
+
+**Disponibilidad:**
+- Sistema disponible 24/7.
+- Correos con sistema de reintentos automáticos.
+
+**Mantenibilidad:**
+- Código documentado y estructurado.
+- Uso de Docker para despliegue.
+- README con instrucciones de instalación.
+- API documentada (Postman/Swagger).
+
+**Usabilidad:**
+- Mensajes de error claros y descriptivos.
+- Códigos HTTP apropiados.
+- Respuestas en formato JSON consistente.
