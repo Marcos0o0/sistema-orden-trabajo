@@ -768,3 +768,83 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 4. Administrador puede ver trabajos previos del mismo vehículo.
 5. Crea nuevo presupuesto basándose en el contexto.
 6. Sigue el flujo normal de presupuesto → aprobación → orden.
+
+## 17. Métricas de Éxito del Sistema
+
+### Métricas Funcionales:
+- **Tasa de conversión presupuesto → orden:** Al menos 60% de presupuestos aprobados.
+- **Correos de presupuesto entregados:** 95% o más exitosos.
+- **Correos de "Listo" entregados:** 95% o más exitosos.
+- **Tiempo de creación de presupuesto:** Menos de 5 minutos.
+- **Creación automática de orden:** 100% exitosa al aprobar.
+
+### Métricas Técnicas:
+- **Tiempo de respuesta API:** < 2 segundos.
+- **Disponibilidad del sistema:** 99% uptime.
+- **Tasa de error en envío de correos:** < 5%.
+- **Tiempo de creación automática de orden:** < 1 segundo.
+
+### Métricas de Usabilidad:
+- **Claridad de correos:** Información completa y legible.
+- **Facilidad de aprobación:** 1 click para aprobar presupuesto.
+- **Trazabilidad:** 100% de órdenes vinculadas a su presupuesto origen.
+
+## 18. Riesgos y Mitigaciones
+
+### Riesgos Técnicos:
+
+**Riesgo 1: Fallo en creación automática de orden**
+- **Impacto:** Crítico - Presupuesto aprobado pero sin orden.
+- **Mitigación:** 
+  - Usar transacciones de BD (todo o nada)
+  - Logs detallados del proceso
+  - Validación previa de datos
+  - Sistema de rollback si falla
+
+**Riesgo 2: Fallo en envío de correos**
+- **Impacto:** Alto - Cliente no recibe información.
+- **Mitigación:** 
+  - Sistema de 3 reintentos automáticos
+  - Logs detallados de intentos
+  - Validación de configuración SMTP
+  - Cola de reintentos con Redis
+
+**Riesgo 3: Desvinculación presupuesto-orden**
+- **Impacto:** Medio - Pérdida de trazabilidad.
+- **Mitigación:** 
+  - Campo obligatorio de referencia
+  - Validación al crear orden
+  - Índices en BD para búsqueda rápida
+
+**Riesgo 4: Modificación de presupuesto aprobado**
+- **Impacto:** Alto - Inconsistencia con orden creada.
+- **Mitigación:** 
+  - Bloqueo automático al aprobar
+  - Validación en endpoints de edición
+  - Auditoría de cambios
+
+### Riesgos de Negocio:
+
+**Riesgo 5: Cliente no recibe correo (spam, email inválido)**
+- **Impacto:** Alto - Fallo en comunicación.
+- **Mitigación:** 
+  - Validación estricta de formato de email
+  - Confirmación de envío en interfaz
+  - Registro de todos los intentos
+  - Opción de reenvío manual
+
+**Riesgo 6: Datos incorrectos copiados a orden**
+- **Impacto:** Alto - Orden con información errónea.
+- **Mitigación:** 
+  - Validación exhaustiva antes de aprobar
+  - Mapeo explícito de campos
+  - Pruebas unitarias del proceso de copia
+  - Posibilidad de editar orden después
+
+**Riesgo 7: Pérdida de datos en el proceso**
+- **Impacto:** Crítico - Pérdida de presupuestos u órdenes.
+- **Mitigación:** 
+  - Backups automáticos diarios
+  - Validaciones de integridad
+  - Transacciones atómicas
+  - Logs de auditoría
