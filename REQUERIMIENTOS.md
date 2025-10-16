@@ -475,3 +475,91 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
                                       ↓ [Cliente retira]
                                  Orden (Entregado)
 ```
+## 13. Consideraciones Técnicas
+
+### Stack Tecnológico:
+- Backend: Node.js con Express
+- Base de Datos: MongoDB con Mongoose
+- Cache: Redis
+- Autenticación: JWT con bcrypt
+- Correo: Nodemailer
+- Containerización: Docker y docker-compose
+
+### Endpoints Principales:
+
+**Autenticación:**
+- POST /api/auth/login
+- POST /api/auth/logout
+- GET /api/auth/me
+
+**Clientes:**
+- GET /api/clients
+- GET /api/clients/:id
+- POST /api/clients
+- PUT /api/clients/:id
+- DELETE /api/clients/:id
+- GET /api/clients/search?q=
+- GET /api/clients/:id/quotes (presupuestos del cliente)
+- GET /api/clients/:id/orders (órdenes del cliente)
+
+**Presupuestos:**
+- GET /api/quotes
+- GET /api/quotes/:id
+- POST /api/quotes
+- PUT /api/quotes/:id (solo si está Pendiente)
+- DELETE /api/quotes/:id
+- POST /api/quotes/:id/send-email (enviar por correo)
+- PUT /api/quotes/:id/approve (aprobar → crea orden automáticamente)
+- PUT /api/quotes/:id/reject (rechazar)
+- GET /api/quotes?status=&client=&date=
+
+**Órdenes de Trabajo:**
+- GET /api/orders
+- GET /api/orders/:id
+- PUT /api/orders/:id (editar trabajos/observaciones)
+- PUT /api/orders/:id/status (cambiar estado)
+- PUT /api/orders/:id/assign (asignar mecánico)
+- DELETE /api/orders/:id (solo si está En Reparación)
+- GET /api/orders?status=&mechanic=&client=
+
+**Mecánicos:**
+- GET /api/mechanics
+- GET /api/mechanics/:id
+- POST /api/mechanics
+- PUT /api/mechanics/:id
+- GET /api/mechanics/:id/orders
+
+## 14. Cronograma Sugerido (4 semanas)
+
+### Semana 1: Fundamentos
+- Configuración inicial del proyecto.
+- Setup de Docker y docker-compose.
+- Conexión a MongoDB y Redis.
+- Sistema de autenticación JWT.
+- CRUD de clientes con validaciones.
+- Configuración de sistema de correo (Nodemailer).
+
+### Semana 2: Presupuestos
+- CRUD completo de presupuestos.
+- Validaciones de datos del vehículo.
+- **Envío manual de presupuestos por correo.**
+- **Lógica de aprobación de presupuestos.**
+- **Lógica de rechazo de presupuestos.**
+- Búsquedas y filtros de presupuestos.
+
+### Semana 3: Órdenes y Mecánicos
+- **Creación automática de orden al aprobar presupuesto.**
+- **Vinculación presupuesto ↔ orden.**
+- Gestión de órdenes (editar, estados).
+- CRUD de mecánicos.
+- Asignación de mecánicos a órdenes.
+- **Envío automático de correo al estado "Listo".**
+
+### Semana 4: Refinamiento y Documentación
+- Cache con Redis.
+- Validaciones completas de reglas de negocio.
+- Pruebas de integración.
+- **Pruebas exhaustivas del flujo presupuesto → orden.**
+- **Pruebas de envío de correos (manual y automático).**
+- Documentación completa (API, instalación, uso).
+- Ajustes finales y optimización.
