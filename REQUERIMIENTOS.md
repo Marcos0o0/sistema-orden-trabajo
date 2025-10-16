@@ -848,3 +848,111 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
   - Validaciones de integridad
   - Transacciones atómicas
   - Logs de auditoría
+
+## 19. Glosario de Términos
+
+- **Presupuesto:** Cotización previa que detalla trabajos y costos antes de iniciar una reparación. Puede ser aprobado o rechazado por el cliente.
+- **Orden de Trabajo:** Documento que autoriza y registra una reparación en curso. Se crea automáticamente al aprobar un presupuesto.
+- **Aprobar:** Acción de aceptar un presupuesto, lo que genera automáticamente una orden de trabajo vinculada.
+- **Rechazar:** Acción de declinar un presupuesto. No genera orden de trabajo.
+- **Estado (Presupuesto):** Puede ser Pendiente, Aprobado o Rechazado.
+- **Estado (Orden):** Puede ser En Reparación, Listo o Entregado.
+- **Vinculación:** Relación entre presupuesto aprobado y orden creada, permite trazabilidad.
+- **Notificación Automática:** Correo enviado sin intervención manual cuando la orden cambia a "Listo".
+- **Mecánico:** Técnico asignado responsable de realizar la reparación.
+
+## 20. Notas Finales para el Desarrollo
+
+### Consideraciones Críticas:
+
+1. **Flujo Presupuesto → Orden es EL CORE del sistema:**
+   - Este es el flujo más importante del negocio
+   - Debe ser robusto y sin errores
+   - Usar transacciones para garantizar consistencia
+
+2. **Creación Automática de Orden:**
+   - Al aprobar presupuesto, la orden se crea SIN intervención manual
+   - Copiar TODOS los datos relevantes del presupuesto
+   - Establecer siempre estado inicial "En Reparación"
+   - Vincular siempre con el presupuesto origen
+
+3. **Vinculación Presupuesto-Orden:**
+   - Implementar campo `quoteId` en la orden
+   - Implementar campo `orderId` en el presupuesto (cuando se apruebe)
+   - Permite navegación bidireccional
+
+4. **Dos Tipos de Correos:**
+   - **Manual:** Presupuesto (enviado por solicitud del admin)
+   - **Automático:** Notificación "Listo" (trigger al cambiar estado)
+
+5. **Bloqueo de Presupuesto Aprobado:**
+   - Una vez aprobado, NO se puede editar
+   - Evita inconsistencias con la orden creada
+   - Implementar validación en endpoints de edición
+
+6. **Estados Claros:**
+   - Presupuesto: Pendiente → Aprobado/Rechazado
+   - Orden: En Reparación → Listo → Entregado
+   - No permitir saltos de estado
+
+7. **Validaciones Estrictas:**
+   - Email obligatorio en clientes (crítico para correos)
+   - Datos de vehículo obligatorios
+   - Costo estimado > 0
+   - Estados válidos
+
+8. **Transacciones:**
+   - Al aprobar presupuesto: todo o nada
+   - Si falla creación de orden, revertir cambio de estado
+   - Logs detallados para debugging
+
+9. **Sistema de Correos Robusto:**
+   - Reintentos automáticos (3 intentos)
+   - Timeout apropiado
+   - Manejo de errores claro
+   - Logs de todos los intentos
+
+10. **Testing Exhaustivo:**
+    - Probar flujo completo múltiples veces
+    - Casos de éxito y fallo
+    - Validar que datos se copian correctamente
+    - Validar que correos se envían
+
+### Secuencia de Implementación:
+
+**Fase 1 - Base (Semana 1):**
+1. Setup proyecto, Docker, MongoDB, Redis
+2. Autenticación JWT
+3. CRUD Clientes con validación email
+4. Configuración Nodemailer
+
+**Fase 2 - Presupuestos (Semana 2):**
+1. Modelo y CRUD de Presupuestos
+2. Validaciones de negocio
+3. Envío manual de presupuesto por correo
+4. Estados de presupuesto
+5. Búsquedas y filtros
+
+**Fase 3 - Órdenes y Automatización (Semana 3):**
+1. Modelo de Órdenes
+2. **Lógica de aprobación de presupuesto**
+3. **Creación automática de orden al aprobar**
+4. **Vinculación presupuesto ↔ orden**
+5. CRUD Mecánicos
+6. Asignación de mecánicos
+7. **Envío automático de correo al estado "Listo"**
+
+**Fase 4 - Refinamiento (Semana 4):**
+1. Validaciones completas
+2. Manejo de errores robusto
+3. Cache con Redis
+4. Pruebas exhaustivas
+5. Documentación completa
+6. Optimización
+
+---
+
+**Última actualización:** Octubre 2025  
+**Versión:** 1.0  
+**Estado:** Listo para desarrollo  
+**Equipo:** [Marcos Godoy, Alvaro Sandoval, Vicente Ortiz y Martin Valdebenito]
