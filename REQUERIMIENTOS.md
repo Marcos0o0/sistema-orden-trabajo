@@ -299,3 +299,69 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Mensajes de error claros y descriptivos.
 - Códigos HTTP apropiados.
 - Respuestas en formato JSON consistente.
+
+## 9. Definición del MVP
+
+### Funcionalidades Incluidas:
+- Autenticación JWT para Administrador y Mecánico.
+- API REST completa con endpoints para:
+  - CRUD de clientes con validación de correo.
+  - **CRUD de presupuestos con aprobación/rechazo.**
+  - **Envío manual de presupuestos por correo.**
+  - **Creación automática de orden al aprobar presupuesto.**
+  - Gestión de órdenes de trabajo.
+  - Asignación de mecánicos.
+  - Cambio de estados de órdenes.
+  - **Envío automático de correo al cambiar a "Listo".**
+  - Búsquedas y filtros.
+- MongoDB para persistencia.
+- Redis para cache de consultas frecuentes.
+- Sistema de correo con Nodemailer.
+- Proyecto dockerizado.
+- Validaciones de todas las reglas de negocio.
+- Documentación completa.
+
+### Futuras Versiones:
+- Interfaz web completa.
+- Dashboard con gráficos y estadísticas.
+- Sistema de inventario de repuestos.
+- Historial detallado por vehículo.
+- Notificaciones SMS/WhatsApp.
+- Sistema de facturación.
+- Reportes exportables (PDF, Excel).
+- Firma digital de presupuestos/órdenes.
+
+## 10. Lista Priorizada de Funcionalidades
+
+### Prioridad Crítica (Imprescindible para MVP)
+1. Autenticación JWT y gestión de usuarios.
+2. CRUD de clientes con validación de correo.
+3. **CRUD de presupuestos.**
+4. **Envío manual de presupuestos por correo.**
+5. **Aprobación de presupuestos (✓ crea orden automáticamente).**
+6. **Rechazo de presupuestos.**
+7. **Creación automática de orden desde presupuesto aprobado.**
+8. Gestión de órdenes (editar, cambiar estado).
+9. Asignación de mecánicos a órdenes.
+10. **Envío automático de correo al estado "Listo".**
+11. Persistencia en MongoDB.
+12. Cache básico en Redis.
+13. Proyecto dockerizado.
+14. README con documentación.
+
+### Prioridad Alta (Post-MVP inmediato)
+1. Búsquedas y filtros avanzados.
+2. Panel de mecánicos con sus órdenes.
+3. Reportes básicos de presupuestos vs órdenes.
+4. Plantillas personalizables de correo.
+
+### Prioridad Media
+1. Dashboard con estadísticas.
+2. Exportación de datos.
+3. Historial por vehículo.
+4. Notificaciones adicionales.
+
+### Prioridad Baja
+1. Interfaz web completa.
+2. Integración con WhatsApp.
+
