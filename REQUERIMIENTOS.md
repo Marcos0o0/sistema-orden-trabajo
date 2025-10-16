@@ -365,3 +365,113 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 1. Interfaz web completa.
 2. Integración con WhatsApp.
 
+## 11. Flujos Principales del Sistema
+
+### 11.1. Autenticación
+1. Usuario ingresa username y password.
+2. Sistema valida credenciales.
+3. Si son correctas, genera token JWT.
+4. Token se incluye en el header de todas las peticiones protegidas.
+5. Token expira en 24 horas.
+
+### 11.2. Creación y Envío de Presupuesto
+1. Cliente llega con su vehículo al taller.
+2. Administrador verifica si el cliente existe.
+3. Si no existe, lo registra con sus datos (incluyendo correo obligatorio).
+4. Administrador crea nuevo presupuesto ingresando:
+   - Selecciona o confirma cliente
+   - Datos del vehículo (marca, modelo, año, patente, kilometraje)
+   - Descripción del problema/trabajo solicitado
+   - Trabajos propuestos
+   - Costo estimado
+5. Sistema guarda presupuesto en estado "Pendiente".
+6. Administrador envía presupuesto por correo al cliente.
+7. Sistema genera correo con formato profesional.
+8. Sistema envía correo (reintenta hasta 3 veces si falla).
+9. Sistema registra fecha de envío.
+10. Cliente recibe presupuesto en su correo.
+
+### 11.3. Aprobación de Presupuesto y Creación de Orden
+1. Cliente revisa presupuesto y decide aprobarlo.
+2. Cliente llama o llega al taller para confirmar.
+3. Administrador busca el presupuesto en el sistema.
+4. Administrador marca presupuesto como "Aprobado".
+5. **Sistema automáticamente:**
+   - Cambia estado del presupuesto a "Aprobado"
+   - **Crea nueva orden de trabajo con los mismos datos:**
+     - Copia ID de cliente
+     - Copia datos del vehículo
+     - Copia descripción del trabajo
+     - Copia trabajos propuestos
+     - Copia costo estimado
+     - Establece estado inicial: "En Reparación"
+     - Vincula presupuesto con orden (guarda ID presupuesto en orden)
+   - Genera número de orden correlativo
+6. Administrador asigna mecánico a la orden.
+7. Orden queda lista para que el mecánico trabaje.
+
+### 11.4. Rechazo de Presupuesto
+1. Cliente decide no aprobar el presupuesto.
+2. Administrador marca presupuesto como "Rechazado".
+3. **Sistema NO crea orden de trabajo.**
+4. Presupuesto queda como registro histórico.
+
+### 11.5. Proceso de Reparación
+1. Mecánico ve su orden asignada.
+2. Realiza los trabajos especificados.
+3. Puede agregar observaciones y detalles adicionales.
+4. Si necesita agregar trabajos extra, edita "trabajos realizados".
+5. Al terminar, actualiza estado a "Listo".
+6. **Sistema detecta cambio a "Listo" y envía correo automático al cliente.**
+
+### 11.6. Envío Automático de Correo "Listo"
+1. Sistema detecta que orden cambió a estado "Listo".
+2. Valida que el cliente tenga correo electrónico registrado.
+3. Genera correo con formato profesional incluyendo:
+   - Número de orden
+   - Datos del vehículo (marca, modelo, patente)
+   - Trabajos realizados
+   - Fecha en que quedó listo
+   - Costo final (si aplica)
+   - Datos de contacto del taller
+4. Intenta enviar correo.
+5. Si falla, reintenta hasta 3 veces.
+6. Registra fecha y resultado del envío en la orden.
+7. Cliente recibe notificación en su correo.
+
+### 11.7. Entrega del Vehículo
+1. Cliente llega a retirar vehículo.
+2. Administrador busca orden en estado "Listo".
+3. Revisa con cliente los trabajos realizados.
+4. Registra costo final.
+5. Cambia estado a "Entregado".
+6. Registra fecha de entrega real.
+
+## 12. Modelo de Datos
+
+### Relaciones:
+- Cliente (1) → Presupuestos (N)
+- Cliente (1) → Órdenes de Trabajo (N)
+- **Presupuesto (1) → Orden de Trabajo (0..1)** [Relación uno a uno opcional]
+- Mecánico (1) → Órdenes de Trabajo (N)
+- Usuario (1) → Mecánico (0..1)
+
+### Diagrama simplificado:
+```
+Cliente
+  ├── Presupuestos
+  │     └── Orden de Trabajo (si fue aprobado)
+  └── Órdenes de Trabajo
+          └── Mecánico asignado
+```
+
+### Flujo de datos:
+```
+Presupuesto (Pendiente) 
+    ↓ [Aprobar]
+Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
+                                      ↓ [Termina trabajo]
+                                 Orden (Listo) → Envía correo
+                                      ↓ [Cliente retira]
+                                 Orden (Entregado)
+```
