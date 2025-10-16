@@ -156,3 +156,71 @@ Crear un sistema digital que permita gestionar presupuestos y órdenes de trabaj
 - Rol (Administrador/Mecánico)
 - ID Mecánico (referencia, si aplica)
 - Estado (Activo/Inactivo)
+
+## 7. Reglas del Negocio
+
+### 7.1. Usuarios y Autenticación
+- Solo usuarios registrados pueden acceder al sistema.
+- Las contraseñas deben estar encriptadas con bcrypt.
+- Los tokens JWT expiran en 24 horas.
+- Solo el Administrador puede crear nuevos usuarios.
+
+### 7.2. Clientes
+- **El correo electrónico es obligatorio para enviar presupuestos y notificaciones.**
+- No se puede eliminar un cliente que tenga presupuestos u órdenes asociadas.
+- Los datos de contacto (teléfono, correo) deben ser válidos.
+
+### 7.3. Presupuestos
+- **Los estados posibles son: Pendiente, Aprobado, Rechazado.**
+- Todo presupuesto nuevo se crea en estado "Pendiente".
+- **Los datos del vehículo (marca, modelo, año, patente, kilometraje) son obligatorios.**
+- La descripción del trabajo es obligatoria.
+- El costo estimado debe ser mayor a cero.
+- **Un presupuesto puede ser enviado por correo al cliente.**
+- **Al aprobar un presupuesto, se crea automáticamente una orden de trabajo con los mismos datos.**
+- **Un presupuesto aprobado NO puede ser modificado.**
+- **Un presupuesto rechazado queda solo como registro histórico.**
+- Solo el Administrador puede aprobar o rechazar presupuestos.
+
+### 7.4. Órdenes de Trabajo
+- **Toda orden de trabajo proviene de un presupuesto aprobado.**
+- **Los estados posibles son: En Reparación → Listo → Entregado.**
+- Al crear la orden (desde presupuesto aprobado), se crea en estado "En Reparación".
+- **La orden mantiene referencia al ID del presupuesto origen.**
+- Una orden debe tener asignado un mecánico.
+- **Al cambiar estado a "Listo", el sistema debe enviar automáticamente un correo al cliente.**
+- Los trabajos realizados pueden ser editados/ampliados durante la reparación.
+- Solo el Administrador puede eliminar órdenes (solo si están en "En Reparación").
+- No se pueden eliminar órdenes en estado "Listo" o "Entregado".
+
+### 7.5. Asignación de Mecánicos
+- Una orden debe tener un mecánico asignado.
+- Un mecánico puede tener múltiples órdenes asignadas.
+- Solo mecánicos activos pueden ser asignados.
+- El Administrador puede reasignar órdenes.
+
+### 7.6. Notificaciones por Correo
+- **El correo de presupuesto se envía manualmente cuando el Administrador lo solicita.**
+- **El correo de "Listo" se envía automáticamente cuando la orden cambia a ese estado.**
+- Los correos deben incluir toda la información relevante.
+- Se debe registrar la fecha y hora de envío.
+- Si el envío falla, se deben realizar hasta 3 reintentos.
+- El sistema debe validar que el cliente tenga un correo válido antes de intentar enviar.
+
+### 7.7. Flujo Principal del Negocio
+**Presupuesto → Aprobación → Orden de Trabajo → Notificación**
+1. Se crea presupuesto con datos del vehículo y trabajos.
+2. Se envía presupuesto por correo al cliente.
+3. Cliente decide aprobar o rechazar.
+4. Si aprueba: sistema crea orden automáticamente con los mismos datos.
+5. Mecánico realiza trabajos.
+6. Al terminar, se cambia estado a "Listo".
+7. Sistema envía correo automático al cliente.
+8. Cliente retira vehículo.
+9. Se cambia estado a "Entregado".
+
+### 7.8. Seguridad
+- Todas las contraseñas se almacenan encriptadas.
+- Los endpoints están protegidos con JWT.
+- Los mecánicos solo acceden a sus órdenes asignadas.
+- El Administrador tiene acceso total.
