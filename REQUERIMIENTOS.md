@@ -563,3 +563,208 @@ Presupuesto (Aprobado) → Crea → Orden de Trabajo (En Reparación)
 - **Pruebas de envío de correos (manual y automático).**
 - Documentación completa (API, instalación, uso).
 - Ajustes finales y optimización.
+
+## 15. Checklist del Proyecto
+
+**Configuración Inicial:**
+- [ ] Grupo formado (3-4 integrantes).
+- [ ] Repositorio en GitHub/GitLab.
+- [ ] Gitflow configurado (main y develop).
+- [ ] REQUERIMIENTOS.md completo.
+- [ ] README.md con instrucciones.
+
+**Infraestructura:**
+- [ ] Docker y docker-compose funcionando.
+- [ ] MongoDB conectado.
+- [ ] Redis configurado.
+- [ ] Nodemailer configurado para envío de correos.
+
+**Autenticación:**
+- [ ] Login funcional con JWT.
+- [ ] Middleware de autenticación.
+- [ ] Encriptación de contraseñas.
+- [ ] Roles (Administrador/Mecánico).
+
+**Gestión de Clientes:**
+- [ ] CRUD completo.
+- [ ] Validación de correo electrónico obligatorio.
+- [ ] Búsqueda de clientes.
+- [ ] Ver presupuestos y órdenes por cliente.
+- [ ] No eliminar clientes con presupuestos/órdenes.
+
+**Gestión de Presupuestos (CRÍTICO):**
+- [ ] Crear presupuestos con datos de cliente y vehículo.
+- [ ] Estados: Pendiente, Aprobado, Rechazado.
+- [ ] Editar presupuestos solo en estado Pendiente.
+- [ ] Validación de datos del vehículo (marca, modelo, año, patente, km).
+- [ ] Envío manual de presupuesto por correo.
+- [ ] Formato profesional del correo de presupuesto.
+- [ ] **Aprobar presupuesto (botón/endpoint).**
+- [ ] Rechazar presupuesto.
+- [ ] Listar con filtros (estado, cliente, fecha).
+- [ ] Buscar presupuestos.
+
+**Creación Automática de Orden (CRÍTICO):**
+- [ ] **Al aprobar presupuesto, crear orden automáticamente.**
+- [ ] **Copiar todos los datos del presupuesto a la orden.**
+- [ ] **Vincular orden con presupuesto (guardar ID presupuesto en orden).**
+- [ ] **Establecer estado inicial "En Reparación".**
+- [ ] **Generar número de orden correlativo.**
+- [ ] **Presupuesto aprobado no puede modificarse.**
+
+**Gestión de Órdenes:**
+- [ ] Listar órdenes.
+- [ ] Ver detalle de orden.
+- [ ] Editar trabajos realizados y observaciones.
+- [ ] Estados: En Reparación, Listo, Entregado.
+- [ ] Cambiar estado respetando flujo.
+- [ ] Asignar/reasignar mecánico.
+- [ ] Ver referencia al presupuesto origen.
+- [ ] Buscar órdenes.
+- [ ] Filtrar por estado, mecánico, cliente.
+
+**Sistema de Correo (CRÍTICO):**
+- [ ] Configuración correcta de SMTP.
+- [ ] **Envío manual de presupuesto funcional.**
+- [ ] **Envío automático al cambiar orden a "Listo".**
+- [ ] Formato profesional de ambos correos.
+- [ ] Sistema de reintentos (3 intentos).
+- [ ] Registro de fecha de envío.
+- [ ] Validación de correo del cliente.
+- [ ] Logs de envíos (éxito/fallo).
+
+**Gestión de Mecánicos:**
+- [ ] CRUD de mecánicos.
+- [ ] Ver órdenes asignadas por mecánico.
+- [ ] Estados activo/inactivo.
+
+**Validaciones:**
+- [ ] Correo obligatorio en clientes.
+- [ ] Datos de vehículo obligatorios en presupuestos.
+- [ ] Flujo de estados correcto.
+- [ ] Presupuesto aprobado no modificable.
+- [ ] Solo un mecánico por orden.
+- [ ] No eliminar con dependencias.
+
+**Documentación:**
+- [ ] API documentada (Postman/Swagger).
+- [ ] **Flujo presupuesto → orden documentado.**
+- [ ] README completo.
+- [ ] Instrucciones de instalación.
+- [ ] Ejemplos de uso de endpoints clave.
+
+**Pruebas:**
+- [ ] Autenticación.
+- [ ] CRUD de cada módulo.
+- [ ] **Flujo completo: crear presupuesto → enviar → aprobar → orden creada.**
+- [ ] **Envío de correo de presupuesto.**
+- [ ] **Envío automático de correo "Listo".**
+- [ ] Cambios de estado.
+- [ ] Validaciones de negocio.
+
+**Entrega Final:**
+- [ ] Proyecto funciona con docker-compose.
+- [ ] Todos los endpoints funcionando.
+- [ ] **Flujo presupuesto → orden funcionando perfectamente.**
+- [ ] Correos enviándose correctamente.
+- [ ] Base de datos con datos de prueba.
+- [ ] Código limpio y comentado.
+- [ ] Al menos 10 commits descriptivos en develop.
+
+## 16. Casos de Uso Principales
+
+### Caso 1: Creación y Envío de Presupuesto
+**Actores:** Administrador, Cliente
+
+**Flujo Principal:**
+1. Cliente llega al taller con problema en su vehículo.
+2. Administrador verifica si cliente existe, si no, lo registra con email obligatorio.
+3. Administrador crea presupuesto ingresando:
+   - Cliente
+   - Datos del vehículo (marca, modelo, año, patente, km)
+   - Descripción del problema
+   - Trabajos propuestos
+   - Costo estimado
+4. Sistema guarda presupuesto en estado "Pendiente".
+5. Administrador solicita enviar presupuesto por correo.
+6. Sistema valida que cliente tenga email.
+7. Sistema genera correo profesional con toda la información.
+8. Sistema envía correo (con reintentos si falla).
+9. Sistema registra fecha de envío.
+10. Cliente recibe presupuesto en su correo y lo revisa.
+
+### Caso 2: Cliente Aprueba Presupuesto → Creación Automática de Orden
+**Actores:** Cliente, Administrador, Sistema
+
+**Flujo Principal:**
+1. Cliente revisa presupuesto recibido por correo.
+2. Cliente decide aprobar y contacta al taller.
+3. Administrador busca el presupuesto en sistema.
+4. Administrador marca presupuesto como "Aprobado".
+5. **Sistema automáticamente:**
+   - Cambia estado del presupuesto a "Aprobado"
+   - **Crea nueva orden de trabajo**
+   - Copia todos los datos del presupuesto:
+     - Cliente
+     - Datos del vehículo
+     - Descripción
+     - Trabajos propuestos
+     - Costo estimado
+   - Establece estado "En Reparación"
+   - Vincula orden con presupuesto (guarda referencia)
+   - Genera número de orden único
+6. Administrador asigna mecánico a la orden creada.
+7. Mecánico puede ver su orden asignada y comenzar trabajo.
+8. Presupuesto aprobado queda bloqueado (no se puede modificar).
+
+**Flujo Alternativo - Cliente Rechaza:**
+1. Cliente decide no aprobar el presupuesto.
+2. Administrador marca presupuesto como "Rechazado".
+3. Sistema NO crea orden de trabajo.
+4. Presupuesto queda solo como registro histórico.
+
+### Caso 3: Reparación y Notificación Automática
+**Actores:** Mecánico, Sistema, Cliente
+
+**Flujo Principal:**
+1. Mecánico trabaja en la orden asignada (estado "En Reparación").
+2. Realiza los trabajos especificados.
+3. Agrega observaciones o trabajos adicionales si es necesario.
+4. Al terminar, cambia estado de orden a "Listo".
+5. **Sistema detecta cambio a "Listo".**
+6. **Sistema automáticamente:**
+   - Valida que cliente tenga email
+   - Genera correo con:
+     - Número de orden
+     - Datos del vehículo
+     - Trabajos realizados
+     - Fecha lista
+     - Costo final
+   - Envía correo (con reintentos si falla)
+   - Registra fecha de envío en la orden
+7. Cliente recibe notificación en su email.
+8. Cliente sabe que puede retirar su vehículo.
+
+### Caso 4: Entrega del Vehículo
+**Actores:** Cliente, Administrador
+
+**Flujo Principal:**
+1. Cliente llega al taller a retirar vehículo.
+2. Administrador busca orden en estado "Listo".
+3. Revisa trabajos realizados con el cliente.
+4. Confirma costo final.
+5. Cliente realiza el pago.
+6. Administrador cambia estado a "Entregado".
+7. Registra fecha de entrega real.
+8. Orden completada forma parte del historial del cliente.
+
+### Caso 5: Cliente Frecuente con Nuevo Problema
+**Actores:** Cliente, Administrador
+
+**Flujo Principal:**
+1. Cliente que ya tiene historial regresa con nuevo problema.
+2. Administrador busca cliente existente.
+3. Sistema muestra presupuestos y órdenes anteriores.
+4. Administrador puede ver trabajos previos del mismo vehículo.
+5. Crea nuevo presupuesto basándose en el contexto.
+6. Sigue el flujo normal de presupuesto → aprobación → orden.
